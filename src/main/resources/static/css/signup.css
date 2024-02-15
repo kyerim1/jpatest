@@ -16,7 +16,7 @@
     column-gap:20px;
 }
 .step li{
-    color:#868686;
+    color:#b7b7b7;
 }
 .step1 .bi{ margin-left:10px; }
 .step_on{
@@ -62,16 +62,49 @@
     cursor:default;
     margin-top:20px;
 }
-.btn_type .on{
+.on{
     background:#ffd013;
     color:#111;
     cursor:pointer;
 }
 
 
+/*  가입 양식  */
+#signup_wrap{
+        width: 400px;
+        margin: 0 auto;
+        display:none;
+}
 
+.write_list{
+    padding:25px 0;
+}
+.write_list li{
+    margin-top:15px;
+}
+.write_list li input{
+        display: block;
+        width: 100%;
+        padding: 18px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 22px;
+        letter-spacing: -0.025em;
+        color: #000;
+}
 
-
+.info{
+        margin-top: 13px;
+        margin-bottom: 13px;
+        padding-left: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 12px;
+        color: #373737;
+        letter-spacing: -0.025em;
+}
 
 
 

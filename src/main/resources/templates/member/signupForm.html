@@ -59,7 +59,7 @@
 
 
     <div id="signup_wrap">
-        <form th:object="${memberDto}" th:action="@{/signup}" method="post">
+        <form id="signFm" th:object="${memberDto}" th:action="@{/signup}" method="post">
             <ul class="write_list">
                 <li id="emailCont" class="email">
                     <input type="text"  placeholder="이메일" th:field="*{email}">

@@ -1,12 +1,20 @@
 package com.example.jpatest.control;
 
 import com.example.jpatest.dto.MemberDto;
+import com.example.jpatest.service.MemberService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
 
 @Controller
 public class MainController {
+
+    MemberService memberService;
+
 
     @GetMapping("/")
     public String index(){
@@ -24,4 +32,22 @@ public class MainController {
         model.addAttribute("memberDto", new MemberDto() );
         return "member/siginForm";
     }
+
+    @PostMapping("/signup")
+    public String signup(@Valid MemberDto memberDto , BindingResult bind,
+                         Model model){
+        if( bind. hasErrors()){
+            System.out.println("유효하지 않은 값");
+        }
+
+        memberService.memberInsert(memberDto);
+
+        //System.out.println( memberDto.getEmail() );
+
+        return "redirect:/";
+    }
+
+
+
+
 }
