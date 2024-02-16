@@ -32,6 +32,23 @@ ul{ list-style-type:none;}
 }
 .small_menu>span{ display:inline-block;  padding:8px; }
 
+#user-box{
+    display:flex;
+    flex-direction: column;
+    position:relative;
+}
+.myinfo-box{display:none;
+    position:absolute;
+    right: 0;
+    top: 30px;
+}
+.myinfo-box a{
+    padding:10px;
+    display:block;
+}
+
+
+
 #footer{
     width:100%;
     padding:50px 100px;
