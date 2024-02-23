@@ -42,7 +42,6 @@ public class WebSecurityConfig {
                 .formLogin()
                 .loginPage("/login") // 커스텀 로그인 주소
                 .loginProcessingUrl("/login_chk") // 로그인 처리 주소
-                //.failureUrl("/login?error") // 로그인 실패시 이동 주소
                 .defaultSuccessUrl("/",true) //로그인 성공시 이동할 페이지
                 .usernameParameter("id") //커스텀 html에 input 태그 name값
                 .passwordParameter("pw") // 커스텀 html에 input 태그 name
