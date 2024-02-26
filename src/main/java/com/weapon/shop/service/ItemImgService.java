@@ -28,9 +28,15 @@ public class ItemImgService {
         String imgUrl="";
 
         //파일 업로드 부분
-        if( !StringUtils.isEmpty(oriName)){
-
+        if( !StringUtils.isEmpty(oriName)){ // 사용자가 업로드 한 원본 이미지이름 여부
+            imgName = fileService.uploadFile(imgLocation,oriName,multipartFile.getBytes());
+            imgUrl = "/images/item/"+imgName;
         }
+        itemImg.setImgUrl(imgUrl);
+        itemImg.setImgName(imgName);
+        itemImg.setOriImgName(oriName);
+        //데이터베이스에 저장할때는  entity객체로 저장 한다.
+        itemImgRepository.save(itemImg);
     }
 
 }
