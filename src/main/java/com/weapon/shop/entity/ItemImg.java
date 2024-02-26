@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
-public class ItemImg {
+public class ItemImg extends BaseEntity{
     @Id
     @Column(name="item_img_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,10 +23,7 @@ public class ItemImg {
     @Column
     private String repImgYn; // 대표이미지 설정
 
-    @Column
-    private LocalDateTime regDate;
-    @Column
-    private LocalDateTime updateDate;
+
 
     @ManyToOne
     @JoinColumn(name="item_id")
