@@ -1,6 +1,7 @@
 package com.weapon.shop.entity;
 
 import com.weapon.shop.constant.Role;
+import com.weapon.shop.dto.MemberFormDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -42,7 +43,15 @@ public class Member extends BaseEntity{
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder){
         Member member = new Member();
         member.setName( memberFormDto.getName() );
+        member.setEmail(memberFormDto.getEmail());
 
+        String password = passwordEncoder.encode(memberFormDto.getPassword());
+        member.setPassword(password);
 
+        member.setZipCode(memberFormDto.getZipCode());
+        member.setAddr1(memberFormDto.getAddr1());
+        member.setAddr2(memberFormDto.getAddr2());
+        member.setRole(Role.USER);
+        return member;
     }
 }
