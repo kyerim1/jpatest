@@ -1,6 +1,7 @@
 package com.weapon.shop.service;
 
 import com.weapon.shop.dto.ItemFormDto;
+import com.weapon.shop.dto.ItemImgDto;
 import com.weapon.shop.dto.ItemSearchDto;
 import com.weapon.shop.dto.MainItemDto;
 import com.weapon.shop.entity.Item;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,6 +25,21 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemImgRepository itemImgRepository;
     private final ItemImgService itemImgService;
+
+    //아이템 상세보기
+    public ItemFormDto getItemDtl(Long itemId){
+        List<ItemImg> itemImgs = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
+        List<ItemImgDto> itemImgDtoList = new ArrayList<>();
+        for(ItemImg itemImg : itemImgs){
+            ItemImgDto itemImgDto = ItemImgDto.of(itemImg);
+            itemImgDtoList.add(itemImgDto);
+        }
+        Item item = itemRepository.findById(itemId).get();
+        ItemFormDto itemFormDto = ItemFormDto.of(item);
+        itemFormDto.setItemImgDtoList(itemImgDtoList);
+        return itemFormDto;
+    }
+
 
 
     //메인페이지에 출력할 상품들 가져오기( 페이징 - 5개씩 보여주기)

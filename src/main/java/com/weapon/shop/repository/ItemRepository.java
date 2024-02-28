@@ -8,10 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item,Long>,
         QuerydslPredicateExecutor<Item>, ItemRepositoryCustom {
+
 
     // 상품 이름으로 조회
     List<Item> findByItemNm(String itemNm);
