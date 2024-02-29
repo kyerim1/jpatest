@@ -3,12 +3,16 @@ package com.weapon.shop.repository;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.weapon.shop.constant.ItemSellStatus;
+import com.weapon.shop.dto.ItemSearchDto;
 import com.weapon.shop.entity.Item;
 import com.weapon.shop.entity.QItem;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.persistence.EntityManager;
@@ -28,6 +32,22 @@ class ItemRepositoryTest {
 
     @PersistenceContext
     EntityManager em;
+
+    @Test
+    @DisplayName("관리자 테스트")
+    public void adminMng(){
+        this.createItemList();
+        ItemSearchDto itemSearchDto = new ItemSearchDto();
+        Pageable pageable= PageRequest.of( 0, 10);
+        Page<Item> items = itemRepository.getAdminItemPage(itemSearchDto, pageable);
+
+        List<Item> itemList = items.getContent();
+        for( Item item : itemList){
+            System.out.println( item );
+        }
+
+    }
+
 
     @Test
     @DisplayName("querydsl 테스트")
