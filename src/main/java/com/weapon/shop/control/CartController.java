@@ -1,5 +1,6 @@
 package com.weapon.shop.control;
 
+import com.weapon.shop.dto.CartDetailDto;
 import com.weapon.shop.dto.CartItemDto;
 import com.weapon.shop.dto.CartOrderDto;
 import com.weapon.shop.service.CartService;
@@ -46,24 +47,32 @@ public class CartController {
 
         return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
     }
-//
-//    @GetMapping(value = "/cart")
-//    public String orderHist(Principal principal, Model model) {
-//        //장바구니 메뉴 클릭시
-//
-//    }
-//
-//    @PatchMapping(value = "/cartItem/{cartItemId}")
-//    public @ResponseBody ResponseEntity updateCartItem(@PathVariable("cartItemId") Long cartItemId, int count, Principal principal) {
-//        // 상품 수량 변경
-//    }
-//    @DeleteMapping(value = "/cartItem/{cartItemId}")
-//    public @ResponseBody ResponseEntity deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal) {
-//         //장바구니 상품 삭제
-//    }
-//
-//    @PostMapping(value = "/cart/orders")
-//    public @ResponseBody ResponseEntity orderCartItem(@RequestBody CartOrderDto cartOrderDto, Principal principal){
-//        // 장바구니 에서 상품 주문
-//    }
+
+    @GetMapping(value = "/cart")
+    public String orderHist(Principal principal, Model model) {
+        //장바구니 메뉴 클릭시
+        List<CartDetailDto> cartDetailDtos = cartService.getCartList(principal.getName());
+        model.addAttribute("cartItems", cartDetailDtos);
+        return "cart/cartList";
+    }
+
+    @PatchMapping(value = "/cartItem/{cartItemId}")
+    public @ResponseBody ResponseEntity updateCartItem(@PathVariable("cartItemId") Long cartItemId, int count, Principal principal) {
+        cartService.updateCartItemCount(cartItemId, count);
+        return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
+    }
+    @DeleteMapping(value = "/cartItem/{cartItemId}")
+    public @ResponseBody ResponseEntity deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal) {
+        cartService.deleteCartItem(cartItemId);
+        return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/cart/orders")
+    public @ResponseBody ResponseEntity orderCartItem(@RequestBody CartOrderDto cartOrderDto, Principal principal){
+        // 장바구니 에서 상품 주문
+        List<CartOrderDto> cartOrderDtoList = cartOrderDto.getCartOrderDtoList();
+
+        Long orderId = cartService.orderCartItem(cartOrderDtoList, principal.getName());
+        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+    }
 }

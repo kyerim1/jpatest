@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +77,23 @@ public class OrderService {
         order.cancelOrder();
     }
 
+    public Long orders(List<OrderDto> orderDtos , String email){
+
+        Member member = memberRepository.findByEmail(email);
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for( OrderDto orderDto : orderDtos){
+            Item item = itemRepository.findById(orderDto.getItemId())
+                    .orElseThrow(EntityNotFoundException::new);
+
+            OrderItem orderItem = OrderItem.createOrderItem(item, orderDto.getCount());
+            orderItems.add(orderItem);
+        }
+        Order order = Order.createOrder(member, orderItems);
+        orderRepository.save(order);
+
+        return order.getId();
+    }
 }
 
 

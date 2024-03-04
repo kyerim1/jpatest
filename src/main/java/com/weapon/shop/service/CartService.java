@@ -3,6 +3,7 @@ package com.weapon.shop.service;
 import com.weapon.shop.dto.CartDetailDto;
 import com.weapon.shop.dto.CartItemDto;
 import com.weapon.shop.dto.CartOrderDto;
+import com.weapon.shop.dto.OrderDto;
 import com.weapon.shop.entity.Cart;
 import com.weapon.shop.entity.CartItem;
 import com.weapon.shop.entity.Item;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,20 +54,53 @@ public class CartService {
         }
 
     }
-//
-//    @Transactional(readOnly = true)
-//    public List<CartDetailDto> getCartList(String email){
-//        //장바구니 메뉴 클릭시
-//    }
-//
-//    public void updateCartItemCount(Long cartItemId, int count){
-//        //장바구니 상품 수량 변경
-//    }
-//
-//    public void deleteCartItem(Long cartItemId) {
-//        //장바구니 상품 삭제
-//    }
-//    public Long orderCartItem(List<CartOrderDto> cartOrderDtoList, String email){
-//        //장바구니 상품 구매하기
-//    }
+
+    @Transactional(readOnly = true)
+    public List<CartDetailDto> getCartList(String email){
+        //장바구니 메뉴 클릭시
+        List<CartDetailDto> cartDetailDtos = new ArrayList<>();
+
+        Member member = memberRepository.findByEmail(email);
+        Cart cart = cartRepository.findByMemberId(member.getId());
+        if(cart == null)
+            return cartDetailDtos;
+
+        cartDetailDtos = cartItemRepository.findList(cart.getId());
+        return cartDetailDtos;
+    }
+
+    public void updateCartItemCount(Long cartItemId, int count){
+        //장바구니 상품 수량 변경
+        CartItem cartItem = cartItemRepository.findById(cartItemId).get();
+        cartItem.updateCount(count);
+    }
+
+    public void deleteCartItem(Long cartItemId) {
+        //장바구니 상품 삭제
+        CartItem cartItem = cartItemRepository.findById(cartItemId).get();
+        cartItemRepository.delete(cartItem);
+    }
+    public Long orderCartItem(List<CartOrderDto> cartOrderDtoList, String email){
+        //장바구니 상품 구매하기
+        List<OrderDto> orderDtos = new ArrayList<>();
+        //선택한 상품을 구매내역에 저장하기 위해 구매Dto(OrderDto)에 저장한다.
+        for( CartOrderDto cartOrderDto : cartOrderDtoList){
+            CartItem cartItem = cartItemRepository.findById(cartOrderDto.getCartItemId()).get();
+
+            OrderDto orderDto = new OrderDto();
+            orderDto.setItemId(cartItem.getItem().getId());
+            orderDto.setCount(cartItem.getCount());
+            orderDtos.add(orderDto);
+        }
+        // 선택한 상품들을 구매내역에 저장하기
+        Long orderId = orderService.orders(orderDtos , email);
+
+        //구매내역으로 넘어갔으니까 장바구니에서는 삭제
+        for(CartOrderDto cartOrderDto : cartOrderDtoList){
+            CartItem cartItem = cartItemRepository.findById(cartOrderDto.getCartItemId()).get();
+            cartItemRepository.delete( cartItem );
+        }
+
+        return orderId;
+    }
 }

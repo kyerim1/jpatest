@@ -64,13 +64,112 @@
         }
 
         function updateCartItemCount(cartItemId, count){ //수량 변화
-            //json 전송
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url = "/cartItem/" + cartItemId+"?count=" + count;
+
+            $.ajax({
+                url      : url,
+                type     : "PATCH",
+                beforeSend : function(xhr){
+                    /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType : "json",
+                cache   : false,
+                success  : function(result, status){
+                    console.log("cartItem count update success");
+                },
+                error : function(jqXHR, status, error){
+
+                    if(jqXHR.status == '200'){
+                        alert('로그인 후 이용해주세요');
+                        location.href='/members/login';
+                    } else{
+                        alert(jqXHR.responseJSON.message);
+                    }
+
+                }
+            });
         }
         function deleteCartItem(obj){ // 장바구니에서 상품 삭제
-            //json 전송
+            var cartItemId = obj.dataset.id;
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url = "/cartItem/" + cartItemId;
+
+            $.ajax({
+                url      : url,
+                type     : "DELETE",
+                beforeSend : function(xhr){
+                    /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType : "json",
+                cache   : false,
+                success  : function(result, status){
+                    location.href='/cart';
+                },
+                error : function(jqXHR, status, error){
+
+                    if(jqXHR.status == '200'){
+                        alert('로그인 후 이용해주세요');
+                        location.href='/members/login';
+                    } else{
+                        alert(jqXHR.responseJSON.message);
+                    }
+
+                }
+            });
         }
         function orders(){ // 상품 주문하기
-            //json 전송
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url ="/cart/orders";
+
+            var dataList = new Array();
+            var paramData = new Object();
+
+            $("input[name=cartChkBox]:checked").each(
+                function(){
+                    var cartItemId = $(this).val();
+                    var data = new Object();
+                    data["cartItemId"] = cartItemId;
+                    dataList.push(data);
+                }
+            );
+
+            paramData["cartOrderDtoList"] = dataList;
+
+            var param = JSON.stringify(paramData);
+
+            $.ajax({
+                    url : url,
+                    type : "POST",
+                    contentType : "application/json",
+                    data : param,
+                    beforeSend : function(xhr){
+                        xhr.setRequestHeader(header, token); //전송전에 헤더에 csrf설정
+                    },
+                    dataType : "json",
+                    cache : false,
+                    success : function( result , status){
+                        alert("주문이 완료 되었습니다.")
+                        location.href="/orders";
+                    },
+                    error : function(jqXHR, status, error){
+                        if(jqXHR.status == "200"){
+                            alert("로그인 후 이용해주세요");
+                            location.href="/members/login";
+                        }else{
+                            alert(jqXHR.responseText);
+                        }
+                    }
+                }
+            );
         }
     </script>
 
